@@ -135,19 +135,22 @@ func main() {
 		"%s HT: %d NT: %d TARIFID: %d\n",
 		res.ID, *res.Day, res.Ht, res.Nt, res.TarifID)
 
-	var newEntry entry
+	var newRow entry
 	for {
 		day := getDay("Day", *res.Day)
 		ht := getInt("Ht", res.Ht)
 		nt := getInt("Nt", res.Nt)
-		newEntry = entry{res.ID + 1, &day, ht, nt, 1}
-		fmt.Printf("Neue Daten. Tag: %s, Diff Ht %d, Diff Nt %d\n",
-			*newEntry.Day, newEntry.Ht-res.Ht, newEntry.Nt-res.Nt)
+		newRow = entry{res.ID + 1, &day, ht, nt, 1}
+		diffHt := newRow.Ht - res.Ht
+		diffNt := newRow.Nt - res.Nt
+		fmt.Printf("Neue Daten. Tag: %s, Diff Ht %d, Diff Nt %d, "+
+			"Total: %d\n", *newRow.Day, diffHt, diffNt,
+			diffHt+diffNt)
 		r := keyboardEntry("ist das korrekt (j/n)")
 		if r == "j" {
 			break
 		}
 	}
 	fmt.Println("Schreibe neue Werte in die Datenbank")
-	storeData(db, newEntry)
+	storeData(db, newRow)
 }
